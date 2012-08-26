@@ -1,0 +1,80 @@
+{% extends "base.html" %}	
+
+{% block breadcrumb %}
+{%if forum%}
+	Forum 
+{%endif%}
+{% endblock %}
+{% block description %}
+{%if forum%}
+  <p>Forum</p>
+  <p style="left: 510px">Threads</p>
+  <p style="left: 750px">Last Active</p>
+{%endif%}
+{% endblock %}
+
+{% block addItem %}
+	{%if staff%}
+		{# Im using type=POST to get around djangos csrf block#}
+		<form action="/AddForum" type="POST">
+			<p class="input"><input type="text" name="forumName" placeholder="Forum name..."></p>
+			<p class="input">
+				<textarea  id="postContent" name="forumDescription"></textarea>
+			</p>
+			<br>
+			<p class="button">
+				<input type="submit" value="Add forum"><br>
+			</p>
+		</form>
+	{%endif%}
+{% endblock %}
+
+{% block navigation %}
+	{%if staff%}
+		<a id="additem-toggle" href="">Add forum</a>
+	{%endif%}
+{% endblock %}
+
+{% block content %}
+
+{# If the variabel forum contains any data run the forloop. If not say that there is no forums yet #}
+{%if forum%}
+	{# Forloop that generates links to the Different Forums #}
+	{%for x in forum%}
+		<div class="items"> 
+			<div class="name"> 
+				<a href="{{x.id}}" class="topic">{{x.title}}</a>
+				{# Only generate 15 words #}
+				<p class="paragraf">{{x.content|striptags|truncatewords:15}}</p>
+				<p class="date" style="display: none">{{x.created|date:"d M Y"}} </p>
+			</div>
+			<div class="posts">
+				{# Returns a list with the items in the forum, then count items and return a number of items in list #}
+				<p>{{x.threadsInForum|length}}</p>
+			</div>
+			<div class="last">
+				{# Last user that posted in Forum and which thread it was posted in#}
+				{%if x.lastPostInForum%}
+					{%for last in x.lastPostInForum%}
+						<p>By, <i>{{last.author}} </i> in <br> {{last.key_thread}}</p>
+					{%endfor%}
+				{%else%}
+					<p>-</p>
+				{%endif%}
+				
+				{# If staff user you can delete Forum #}
+				{%if staff%}
+				<div class="remove">
+					<span class="icon default">'</span>
+					<a class="deleteForumThread" data-value="/deleteItem/{{x.author}}/forum/{{x.id}}/" href="/deleteItem/{{x.author}}/forum/{{x.id}}/">confirm</a>
+				</div>
+				{%endif%}
+			</div>
+		</div>
+	{%endfor%}
+{%else%}
+	<div class="threads"> 
+		<h2 class="noneAdded" style="text-align: center">There is no forums yet!</h2>
+	</div>
+{%endif%}
+{% endblock %}

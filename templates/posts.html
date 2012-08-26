@@ -1,0 +1,90 @@
+{% extends "base.html" %}	
+{% block title %}Forum - {{forum.title}} > {{thread.title|title}}{% endblock %}
+{% block breadcrumb %}
+	<a href="../../">Forum</a> <span class="icon">></span>
+	<a href="../">{{forum.title}}</a> <span class="icon">></span>
+	<p>{{thread.title|title}}</p>
+{% endblock %}
+
+{% block content %}
+{# If logedon as a staffuser your allowed to add Forum#}			
+		{# Thread description #}
+		<div class="info-holder">
+			<p class="head">
+				{{posts|length}} replys
+				<span style="float:right">Created {{thread.created|date:"d M Y"}} </span>
+			</p>
+			<p>{{thread.content|safe}}</p>
+		</div>
+			{# If the variabel posts contains any data run the forloop. If not say that the Thread dont contain any posts yet #}
+			{%if posts%}
+				{# Forloop that generates the Different threads in a specific Forum #}
+				{%for x in posts%}
+					<div class="comments">
+						<div class="left">
+							<div class="avatar">
+								{% if x.author.get_profile.image %}
+		                            <img style="float: right" class="useravatar" src="/site_media/{{x.author.get_profile.image}}" alt="avatar">
+		                        {% else %}
+		                            <img style="float: right" src="/site_media/avatars/default.png" alt="avatar">
+		                        {% endif %}
+							</div>
+							<p> 
+								<span class="icon" >d</span> 
+								<b style="color:#212121;">{{x.author}}</b>
+							</p>
+							<p class="date">{{x.created|date:"d M Y"}}</p>
+								{# Staffusers can override and delete all posts#}
+								{%if staff%}
+									<div class="remove">
+										<span class="icon default">S</span>
+										<a class="editPost" href="#">edit</a>
+										<a class="deletePost" data-value="/deleteItem/{{x.author}}/post/{{x.id}}/" href="/deleteItem/{{x.author}}/post/{{x.id}}/?forum={{forumID}}&thread={{threadID}}">remove</a>
+									</div>
+								{# Allows users to edit and delete their own Posts #}
+								{%elif x.author.username == username%}
+									<div class="remove">
+										<span class="icon default">S</span>
+										<a class="editPost" href="#">edit</a>
+										<a class="deletePost" data-value="/deleteItem/{{x.author}}/post/{{x.id}}/" href="/deleteItem/{{x.author}}/post/{{x.id}}/?forum={{forumID}}&thread={{threadID}}">remove</a>
+									</div>
+								{%endif%}
+
+						</div>
+						<div class="right">
+							{# Holds the comment by user, this container that the atribute contenteditabel sets to True when users activates the edit mode #}
+							<div class="contentData">{{x.content|safe}}</div>
+							{# Holds the original data so that users cant save without edit the post. Value changes after every save. #}
+							<input type="hidden" class="contentDataOrginal" value="{{x.content|safe}}" />
+							{#Save and Edit buttons for post#}
+							<div class="changeContent" style="display: none;">
+								<p class="normal"><a href="#" class="save-changes" data-value="{{x.id}}" ><span class="icon">.</span> save</a></p>
+								<p class="normal"><a href="#" class="cancel-changes" ><span class="icon">'</span> cancel</a></p>
+							</div>
+						</div>
+					</div>
+				{%endfor%}
+			{%else%}
+					<h2 style="text-align:center; padding:20px;">
+						No posts yet..
+					</h2>
+			{%endif%}
+			
+			{%if authed%}
+			{# Submitfor for adding post to a thread, only generated if user is logedon #}
+			<h2>Post your thoughts</h2>
+			<form id="post-form" action="/AddPost" type="POST">
+				<p class="input">
+					<textarea  id="postContent" name="postContent"></textarea>
+				</p><br>
+				<p class="button outside">
+					<input type="submit" id="postButton" style="float:right;" value="Submit post">
+				</p>
+				<input type="hidden" value="{{forum.id}}" name="forum_key"><br>
+				<input type="hidden" value="{{thread.id}}" name="thread_key"><br>
+			</form>
+			{%else%}
+				<p style="text-align:center; padding:20px;">login to add post </p>
+			{%endif%}
+			{{x}}
+		{%endblock%}

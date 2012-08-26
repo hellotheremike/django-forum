@@ -1,0 +1,49 @@
+{% extends "base.html" %}	
+{% block title %}
+	Sign up
+{% endblock %}
+
+{% block content %}
+	<div class="register">
+		<form id="register-user"  enctype="multipart/form-data" method="post" action="/sign-up/">
+			{% csrf_token %} 
+
+			<p class="input">
+				<input type="text" name="firstname"  id="new-firstname" placeholder="Firstname">
+				<span></span>
+			</p>
+			<p class="input ">
+				<input type="text" name="lastname" id="new-lastname" placeholder="Lastname">
+				<span></span>
+			</p>
+			<br>
+			<p class="input">
+				<input type="text" name="username" id="new-username" placeholder="Username">
+				<span></span>
+			</p>
+			<br>
+			<p class="input">
+				<input type="text" name="email" id="new-email" placeholder="Email adress">
+				<span></span>
+			</p>
+			<br>
+			<p class="input">
+				<input type="password" name="password" id="new-password" placeholder="Password">
+				<span></span>
+			</p>
+			<p class="input">
+				<input type="password" id="new-password-confirm" placeholder="Repeat Password">
+				<span></span>
+			</p>
+			<p class="button">
+				<input type="button" id="file" name="file" id="fileButton" value="Chose image" />​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
+				<input type="file" style="display: none" id="id_file" name="file">
+				<span></span>
+			</p>
+			<br>
+			<p class="button">
+				<input type="submit" id="create-user" value="Create user">
+			</p>
+		</form>
+	</div>
+{% endblock %}

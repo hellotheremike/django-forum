@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/site_media/style.css">
+    <script type="text/javascript" src="/site_media/script/jquery.js"></script>
+    <script type="text/javascript" src="/site_media/script/forum.js"></script>
+    <script type="text/javascript" src="/site_media/script/jquery.easing.1.3.js"></script>
+    <title>
+        Realify{% block title %}{% endblock %}
+    </title>
+</head>
+<body>
+    <div id="head">
+        <div class="holder">
+            <a class="logo" href="/"></a>
+            <nav>  
+                {% block navigation %}{% endblock %}
+                {%if authed%}
+                    <a id="login-toggle" href="">Profile</a>
+                {%else%}
+                    <a id="register" href="/sign-up/">Sign up</a>
+                    <a id="login-toggle" href="">Login</a>
+                {%endif%}
+            </nav>
+        </div>
+        <div id="head-border"></div>
+    </div>
+    <div id="settings">
+        <div class="holder">
+            <div id="login-form">
+                <div class="holder">
+                    {%if authed%}
+                        {% if request.user.get_profile.image %}
+                            <div class="avatar">
+                                <img style="float: right" src="/site_media/{{request.user.get_profile.image}}" alt="avatar">
+                            </div>
+                        {% else %}
+                            <img style="float: right" src="/site_media/avatars/default.png" alt="avatar">
+                        {% endif %}
+                        <div class="info">
+                            <p class="bold">{{request.user.get_profile.user}}</p>
+                            <p>{{request.user.get_profile.firstname}} {{request.user.get_profile.lastname}}</p>
+                            <p>{{request.user.email}}</p>
+                        </div>
+                        <p class="button logout">
+                            <input type="button" id="logout" value="logout">
+                        </p>
+                    {%else%}
+                    <form>
+                        <p class="input">
+                            <input type="text" name="username" placeholder="Username">
+                        </p>
+                        <p class="input">
+                            <input type="password" name="password" placeholder="Password">                            
+                        </p>
+                        <p class="button">
+                            <input type="submit" id="login" value="login">
+                        </p>
+                    </form>
+                    <p class="message"></p>
+                    {%endif%}  
+                </div>
+            </div>
+            <div id="add-item">
+                <div class="holder">
+                    {% block addItem %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+        <div id="breadcrumb">
+            {%block breadcrumb%}{%endblock%}
+        </div>
+        <div id="info">
+            {%block information%}{%endblock%}
+        </div>
+        <div id="description">
+            {%block description%}{%endblock%}
+        </div>
+        {%block content%}{%endblock%}
+    </div>
+</body>
+</html>
